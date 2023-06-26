@@ -1,0 +1,6 @@
+@charset "UTF-8";
+
+#wrap {margin:0 auto; width:1200px;}
+nav {min-height:400px; background-color:#5882FA}
+.content {min-height:400px;}
+footer {height:100px;}
