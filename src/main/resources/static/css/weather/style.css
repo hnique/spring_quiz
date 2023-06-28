@@ -1,6 +1,26 @@
 @charset "UTF-8";
 
-#wrap {margin:0 auto; width:1200px;}
-nav {min-height:400px; background-color:#5882FA}
-.content {min-height:400px;}
+#wrap {width:1200px;}
+
+nav {background-color:cornflowerblue;}
+
+.contents {height:1000px;}
+
 footer {height:100px;}
+
+.input-label {
+    width:130px;
+    text-align: right;
+    margin-right:10px;
+}
+
+.menu-font {
+    color:white;
+    font-size:17px;
+    font-weight: bold;
+}
+
+.menu-font:hover {
+    color:white;
+    border: 2px solid white;
+}
