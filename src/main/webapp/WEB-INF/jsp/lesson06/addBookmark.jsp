@@ -19,12 +19,14 @@
 		</div>
 		<div class="form-group">
 			<label for="url">URL 주소</label>
-			<div class="d-flex justify-content-between">
-				<input type="text" id="url" class="form-control col-11">
-				<button type="button" id="urlCheckBtn" class="btn btn-info">중복확인</button>
+			<div class="form-inline">
+				<input type="text" id="url" class="form-control col-10">
+				<button type="button" id="duplicationBtn" class="btn btn-info ml-2">중복확인</button>
 			</div>
-			<small id="urlStatusArea"></small>
+			<small id="duplicationText" class="text-danger d-none">중복된 url 입니다.</small>
+			<small id="availableText" class="text-success d-none">저장 가능한 url 입니다.</small>
 		</div>
+		
 		<button type="button" id="addBookmarkBtn" class="btn btn-success btn-block">추가</button>
 	</div>
 	
@@ -34,7 +36,7 @@
 				let name = $("#name").val().trim();
 				let url = $('#url').val().trim();
 				
-				// validationsadasd
+				// validation
 				if (name == "") {
 					alert("제목을 입력하세요.");
 					return;
@@ -48,6 +50,12 @@
 				// 주소 형식이 잘못되었을 때 참: http && https 가 아닐 때
 				if (!url.startsWith('http://') && url.startsWith("https://") == false) {
 					alert("주소 형식이 잘못 되었습니다.");
+					return;
+				}
+				
+				// 문제2) 중복확인 체크
+				if ($('#availableText').hasClass('d-none')) { // 잘못된 경우 availableText d-none인 경우
+					alert("중복된 url입니다. 다시 확인해주세요");
 					return;
 				}
 				
@@ -72,28 +80,31 @@
 				});
 			});
 			
-			$("#urlCheckBtn").on('click', function() {
-				$('#urlStatusArea').empty();
-				let url = $('#url').val().trim();
+			// 문제 2-1) 중복확인
+			$('#duplicationBtn').on('click', function() {
+				let url = $('url').val().trim();
+				if (!url) {
+					alert("검사할 url을 입력해주세요.");
+					return;
+				}
 				
-				// url 중복확인 AJAX 통신 (DB 확인)
-				$.ajax({
+				// AJAX 통신 => DB URL 존재 여부
+				$ajax({
 					// request
-					type: "get" // get 일 때는 생략 가능 (ajax의 기본요청이기 때문)
-					, url: "/lesson06/quiz01/is_duplication"
-					, data: {"url":url}
+					type: "POST",
+					url: "/lesson06/quiz01/is_duplication_url",
+					data: {"url":url},
 					
 					// response
-					, success: function(data) {
-						// alert(data);
+					success: function(data) {
+						// {"code":1, "isDuplication":true}
 						if (data.isDuplication) { // 중복
-							$("#urlStatusArea").append('<span class="text-danger">중복된 url 입니다.</span>');
-						} else {
-							$("#urlStatusArea").append('<span class="text-danger">저장 가능한 url 입니다.</span>');
+							$('#duplicationText').removeClass('d-none');
+							$('#availableText').addClass('d-none');
+						} else { // 사용 가능(중복 아님)
+							$('#duplicationText').addClass('d-none');
+							$('#availableText').removeClass('d-none');
 						}
-					}
-					, error: function(request, status, error) {
-						alert("중복 확인에 실패했습니다.");
 					}
 				});
 			});
